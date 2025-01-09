@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+    <style>
+        h2 {
+            color: red;
+            display: none;
+        }
+        img {
+            max-width: 100%;
+        }
+        .circulo{
+            width: 100px;
+            height: 150px;
+            border-radius: 100%;
+            position: relative;
+            top: 100px;
+            left: 100px;
+            cursor: pointer;
+        }
+        .circulo:hover {
+            cursor: url("./img/puntero-de-pistola.png") 2 2, pointer;
+        }
+        body {
+            background: url(./img/fondo.jpg);
+            background-size: cover;
+            height: 90dvh;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .zonaJ:hover {
+            cursor: url("./img/puntero-de-pistola.png") 2 2, pointer;
+        }
+        .zonaJ{
+            cursor: url("./img/puntero-de-pistola.png") ;
+            
+            height: 40dvh;
+            width: 80dvw;
+            border: solid red 3px;
+            border-radius: 50px;
+            overflow: hidden;
+            background: linear-gradient(
+            rgba(0, 0, 0, 0.1),
+            rgba(0, 0, 0, 0.4)
+            );
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: aliceblue;
+            color: black;
+            border-radius: 30px;
+            padding: 10px;
+            margin-top: 50px;
+            display: none;
+            width: 200px;
+            text-align: center;
+        }
+    </style>
+<body>
+    <h1 >TIME: <span class="tm">30</span></h1>
+    <h1 >SCORE: <span class="scr">0</span></h1>
+    <h2>Fin del juego</h2>
+    <div class="zonaJ">
+        <div class="circulo">
+            <img src="./img/enemigo1.png"  alt="">
+        </div>
+    </div>
+    <a href="#">Vover a Jugar</a>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        let score = 0;
+        let time = 30;
+        var timeouts = [];
+        let alt = $('.zonaJ').height()-150;
+        let anch = $('.zonaJ').width();
+
+        //mover el personaje cada cierto tiempo
+        let paelota = setInterval(function mover() {
+            $('.circulo').children('img').attr('src','./img/enemigo1.png');
+            let na = 1 + Math.floor(Math.random() * alt);
+            let nb = 1 + Math.floor(Math.random() * anch);
+            $('.circulo').css({
+                'top': na+'px',
+                'left':nb+'px'
+            })
+            
+            if (time <= 2) {
+                clearTimeout(paelota);
+                $('.circulo').hide();
+            }
+            $('.circulo').show();
+
+        }, 2000)
+
+        //cambiar entre personajes
+        let cambioP = setInterval(function () {
+            let ve = $('.circulo').is(':hidden');
+            
+            //si se ve se cambia la imagen
+            if (!ve) {
+                //debido al delay de la explosion se debe esperar para hacer la comprobacion
+                setTimeout(
+                    function() 
+                    {
+                        $('.circulo').children('img').attr('src','./img/enemigo2.png');
+                    }, 210);
+            }
+            if (time <= 2) {
+                clearTimeout(cambioP);
+            }
+        },999)
+
+        let correT =  setInterval(function () {
+            time--;
+            if (time <= 0) {
+                    clearTimeout(correT);    
+                    $('h2').show();
+                    $('a').show();
+            }
+            $('.tm').text(time); 
+
+        },1000);
+
+        //explosion y despues desaparecer
+        $('.circulo').on('click',function () {
+            score++;
+            $('.circulo').children('img').attr('src','./img/explos.gif');
+            setTimeout(
+                    function() 
+                    {
+                        $('.circulo').hide();
+                    }, 210);
+
+            $('.scr').text(score); 
+        })
+
+        //volver a jugar
+        $('a').on("click", function () {
+            location.reload();
+        })
+        
+    </script>
+</body>
+</html>
